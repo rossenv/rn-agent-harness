@@ -1,0 +1,33 @@
+# The check that runs no matter who wrote the code, person or agent.
+# Its job id, `check`, is the required status check in the rulesets (ADR 0002). Keep the name.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop, "release/**"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run format:check
+      - name: No silencing comments # a disable comment turns off the rule that would catch it
+        run: "! git grep -nE 'eslint-(disable|enable)|@ts-(ignore|expect-error|nocheck)' -- src __tests__ scripts"
+      - run: npm test -- --ci # the full suite, never only changed tests
