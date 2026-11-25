@@ -1,6 +1,6 @@
 # rn-agent-harness
 
-A React Native template built on Expo and Expo Router. Teams copy it for new apps, and Claude Code and Codex work in it under rules people own. Words such as *rule file*, *ticket ID* and *back-merge* mean what `GLOSSARY.md` says.
+A React Native template built on Expo and Expo Router. Teams copy it for new apps, and Claude Code and Codex work in it under rules people own. Words such as _rule file_, _ticket ID_ and _back-merge_ mean what `GLOSSARY.md` says.
 
 ## Done means checked
 

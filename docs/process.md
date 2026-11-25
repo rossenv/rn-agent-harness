@@ -4,14 +4,14 @@ Status: proposed (2026-11-25). The reasons behind these rules are in `docs/adr/`
 
 ## Branches
 
-| Type | Name | Branch from | Merge into |
-|---|---|---|---|
-| feat | `feat/<ticket-id>-short-name` | `develop` | `develop` |
-| fix | `fix/<ticket-id>-short-name` | `develop`, or the open release branch | where it came from |
-| chore | `chore/<ticket-id>-short-name` | `develop` | `develop` |
-| refactor | `refactor/<ticket-id>-short-name` | `develop` | `develop` |
-| release | `release/vX.Y.Z` | `develop` | `main`, in version order |
-| hotfix | `hotfix/<ticket-id>-short-name` | `main` | `main` |
+| Type     | Name                              | Branch from                           | Merge into               |
+| -------- | --------------------------------- | ------------------------------------- | ------------------------ |
+| feat     | `feat/<ticket-id>-short-name`     | `develop`                             | `develop`                |
+| fix      | `fix/<ticket-id>-short-name`      | `develop`, or the open release branch | where it came from       |
+| chore    | `chore/<ticket-id>-short-name`    | `develop`                             | `develop`                |
+| refactor | `refactor/<ticket-id>-short-name` | `develop`                             | `develop`                |
+| release  | `release/vX.Y.Z`                  | `develop`                             | `main`, in version order |
+| hotfix   | `hotfix/<ticket-id>-short-name`   | `main`                                | `main`                   |
 
 After a merge into `main` or a release branch, the change is passed forward through back-merges (see "Passing changes forward").
 
