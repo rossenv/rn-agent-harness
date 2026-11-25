@@ -28,7 +28,15 @@
     "react-native-worklets": "0.13.0"
   },
   "devDependencies": {
+    "@testing-library/react-native": "^14.1.0",
+    "@types/jest": "30.0.0",
     "@types/react": "~19.3.0",
+    "eslint": "^9.39.5",
+    "eslint-config-expo": "~58.0.4",
+    "eslint-config-prettier": "^10.1.8",
+    "jest": "~30.5.2",
+    "jest-expo": "~58.0.15",
+    "prettier": "^3.10.1",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -37,7 +45,18 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings=0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
-  "private": true
+  "private": true,
+  "engines": {
+    "node": ">=26 <27"
+  },
+  "jest": {
+    "preset": "jest-expo"
+  }
 }

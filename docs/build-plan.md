@@ -4,32 +4,33 @@ Status: proposed (2026-11-25). This plan turns the create-expo-app scaffold (Exp
 
 ## Decisions
 
-| # | Decision | Recorded in |
-|---|---|---|
-| Q1 | Most pull requests need no review. A rule-file change needs the owner's approval. | ADR 0002 |
-| Q2 | Protect `main`, `develop` and `release/*`; merge commits only; `develop` is the default branch; protect `v*` tags. | ADR 0001 |
-| Q3 | ESLint with `eslint-config-expo`, not oxlint. | ADR 0003 |
-| Q4 | `@/` import paths; no `../` imports. | ADR 0004 |
-| Q5 | npm (the lockfile already exists). | this plan |
-| Q6 | No EAS; rewrite the generated AGENTS.md. | ADR 0005 |
-| Q7 | Default exports are banned except in `src/app/**` and config files. There is no `src/index.ts` re-export rule. | this plan |
-| Q8 | CI checks the ticket-ID prefix on each commit and the branch name. | `docs/process.md` |
-| Q9 | The Gitflow table, back-merges as pull requests, tags created by CI. Changes pass forward along `main` → open release branches (oldest first) → `develop`; releases merge into `main` in version order; a workflow opens each back-merge pull request. | ADR 0001, `docs/process.md` |
-| Q10 | Version starts at 0.1.0 and lives in `package.json`; each PR adds a line under `[Unreleased]`. | `docs/process.md` |
-| Q11 | Agents may read Jira, ask before writes, and can't delete. | ADR 0006 |
-| Q12 | Maestro runs on local release builds; one Android CI job, not required at first. | ADR 0005 |
-| Q13 | Folders in `src/` import in one direction. | ADR 0004 |
-| Q14 | The TODO demo supports add, complete and delete, with a `useReducer` store saved through `expo-sqlite/kv-store`. | this plan |
-| Q15 | A GitHub template repository, `docs/setup.md`, `scripts/setup-repo.sh`, and a check that fails while placeholders remain. | this plan |
-| Q16 | Remove the on-save `organizeImports` and `sortMembers` actions; the brief stays out of git. | this plan |
-| Q17 | Only people merge into `main`. | ADR 0002 |
-| Q18 | The rule-file list, including `app.json`. | ADR 0002 |
-| Q19 | Prettier as its own step; the edit hook formats each edited file. | ADR 0003 |
-| Q20 | Node 24, pinned in `.nvmrc` and `engines`. | this plan |
+| #   | Decision                                                                                                                                                                                                                                               | Recorded in                 |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------- |
+| Q1  | Most pull requests need no review. A rule-file change needs the owner's approval.                                                                                                                                                                      | ADR 0002                    |
+| Q2  | Protect `main`, `develop` and `release/*`; merge commits only; `develop` is the default branch; protect `v*` tags.                                                                                                                                     | ADR 0001                    |
+| Q3  | ESLint with `eslint-config-expo`, not oxlint.                                                                                                                                                                                                          | ADR 0003                    |
+| Q4  | `@/` import paths; no `../` imports.                                                                                                                                                                                                                   | ADR 0004                    |
+| Q5  | npm (the lockfile already exists).                                                                                                                                                                                                                     | this plan                   |
+| Q6  | No EAS; rewrite the generated AGENTS.md.                                                                                                                                                                                                               | ADR 0005                    |
+| Q7  | Default exports are banned except in `src/app/**` and config files. There is no `src/index.ts` re-export rule.                                                                                                                                         | this plan                   |
+| Q8  | CI checks the ticket-ID prefix on each commit and the branch name.                                                                                                                                                                                     | `docs/process.md`           |
+| Q9  | The Gitflow table, back-merges as pull requests, tags created by CI. Changes pass forward along `main` → open release branches (oldest first) → `develop`; releases merge into `main` in version order; a workflow opens each back-merge pull request. | ADR 0001, `docs/process.md` |
+| Q10 | Version starts at 0.1.0 and lives in `package.json`; each PR adds a line under `[Unreleased]`.                                                                                                                                                         | `docs/process.md`           |
+| Q11 | Agents may read Jira, ask before writes, and can't delete.                                                                                                                                                                                             | ADR 0006                    |
+| Q12 | Maestro runs on local release builds; one Android CI job, not required at first.                                                                                                                                                                       | ADR 0005                    |
+| Q13 | Folders in `src/` import in one direction.                                                                                                                                                                                                             | ADR 0004                    |
+| Q14 | The TODO demo supports add, complete and delete, with a `useReducer` store saved through `expo-sqlite/kv-store`.                                                                                                                                       | this plan                   |
+| Q15 | A GitHub template repository, `docs/setup.md`, `scripts/setup-repo.sh`, and a check that fails while placeholders remain.                                                                                                                              | this plan                   |
+| Q16 | Remove the on-save `organizeImports` and `sortMembers` actions; the brief stays out of git.                                                                                                                                                            | this plan                   |
+| Q17 | Only people merge into `main`.                                                                                                                                                                                                                         | ADR 0002                    |
+| Q18 | The rule-file list, including `app.json`.                                                                                                                                                                                                              | ADR 0002                    |
+| Q19 | Prettier as its own step; the edit hook formats each edited file.                                                                                                                                                                                      | ADR 0003                    |
+| Q20 | Node 26 (active LTS), pinned in `.nvmrc` and `engines`.                                                                                                                                                                                                | this plan                   |
 
 ## What comes from the lab
 
 **As-is**
+
 - The seven principles, the rollout tiers, the "Not covered" table and the after-upgrade checks.
 - `CLAUDE.md` containing `@AGENTS.md`.
 - The AGENTS.md lines that treat outside text as data, with "issue" changed to "ticket".
@@ -39,6 +40,7 @@ Status: proposed (2026-11-25). This plan turns the create-expo-app scaffold (Exp
 - How `protect-files.ts` and `stop-gate.ts` work: block, allow one retry, then tell the person.
 
 **Needs an RN version**
+
 - AGENTS.md content.
 - The protected-path list (ADR 0002).
 - `lint-edit.ts`: the lab's version skips `.tsx`; it must run ESLint and Prettier instead.
@@ -52,6 +54,7 @@ Status: proposed (2026-11-25). This plan turns the create-expo-app scaffold (Exp
 - `.vscode`: the ESLint and Prettier extensions instead of Oxc.
 
 **Doesn't apply**
+
 - The fake tracker MCP and `mcp/`.
 - The GitHub-issues MCP.
 - Vitest.
@@ -69,7 +72,7 @@ Each step ends with the check that proves it's done. Nothing here pushes to GitH
    Check: the owner reads them, changes the status to accepted, and commits them by hand.
 2. **Rewrite AGENTS.md; add CLAUDE.md with `@AGENTS.md`.**
    Check: in a new session of each tool, ask "Where does a fix branch from during a release?" and "Do we use EAS?". Both answer as `docs/process.md` and ADR 0005 say.
-3. **npm scripts `typecheck`, `lint`, `format:check` and `test`; jest-expo (needs Jest 30) with one smoke test; Prettier; `.nvmrc` and `engines` pinning Node 24.**
+3. **npm scripts `typecheck`, `lint`, `format:check` and `test`; jest-expo (needs Jest 30) with one smoke test; Prettier; `.nvmrc` and `engines` pinning Node 26.**
    Check: all four scripts pass locally.
 4. **`ci.yml` with the `check` job, triggered by pull requests and by pushes to `main`, `develop` and `release/**`.**
    Check: a pull request with a deliberate type error goes red, and its fix goes green.
