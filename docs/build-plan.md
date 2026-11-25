@@ -22,7 +22,7 @@ Status: proposed (2026-11-25). This plan turns the create-expo-app scaffold (Exp
 | Q14 | The TODO demo supports add, complete and delete, with a `useReducer` store saved through `expo-sqlite/kv-store`.                                                                                                                                       | this plan                   |
 | Q15 | A GitHub template repository, `docs/setup.md`, `scripts/setup-repo.sh`, and a check that fails while placeholders remain.                                                                                                                              | this plan                   |
 | Q16 | Remove the on-save `organizeImports` and `sortMembers` actions; the brief stays out of git.                                                                                                                                                            | this plan                   |
-| Q17 | Only people merge into `main`.                                                                                                                                                                                                                         | ADR 0002                    |
+| Q17 | Only people merge into `main`. Agents use the teammate's GitHub login, so the agent tools enforce it: ask before `gh pr merge`, deny `--admin`.                                                                                                        | ADR 0002                    |
 | Q18 | The rule-file list, including `app.json`.                                                                                                                                                                                                              | ADR 0002                    |
 | Q19 | Prettier as its own step; the edit hook formats each edited file.                                                                                                                                                                                      | ADR 0003                    |
 | Q20 | Node 26 (active LTS), pinned in `.nvmrc` and `engines`.                                                                                                                                                                                                | this plan                   |
@@ -78,7 +78,7 @@ Each step ends with the check that proves it's done. Nothing here pushes to GitH
    Check: a pull request with a deliberate type error goes red, and its fix goes green.
 5. **Branch-name, commit-prefix and version-match scripts in `scripts/`, with unit tests, run by CI.**
    Check: the script tests pass, and a pull request from a branch named `bad-name` fails.
-6. **CODEOWNERS; `develop` created and made the default branch; rulesets for `main`, `develop`, `release/*` and `v*` tags; merge commits only; only people merge into `main`.**
+6. **CODEOWNERS; `develop` created and made the default branch; rulesets for `main`, `develop`, `release/*` and `v*` tags; merge commits only; the admin bypass (pull requests only).**
    Check:
    - `git push origin main` is rejected.
    - `gh api repos/<owner>/<repo>/rulesets` lists the rulesets.
@@ -89,8 +89,8 @@ Each step ends with the check that proves it's done. Nothing here pushes to GitH
    Check: an agent adds `src/tmp.tsx` with badly grouped imports, and lint feedback comes back right after the edit. Delete the file afterwards.
 9. **The stop gate.**
    Check: ask an agent to add `.skip` to a test and finish. The gate refuses.
-10. **Permissions and sandbox in both tools; the Codex prefix rules; the `.vscode` fix.**
-    Check: `npx expo install x` asks first in both tools, and saving a file in VS Code keeps the import groups.
+10. **Permissions and sandbox in both tools: ask before `npx expo install`, `npm install` and `gh pr merge`, and deny `gh pr merge --admin`; the Codex prefix rules; the `.vscode` fix.**
+    Check: `npx expo install x` and `gh pr merge` ask first in both tools, `gh pr merge --admin` is refused, and saving a file in VS Code keeps the import groups.
 
 ### B. The Expo app
 
@@ -129,5 +129,5 @@ Each step ends with the check that proves it's done. Nothing here pushes to GitH
     - A fix made on `release/v0.1.0` reaches `release/v0.2.0` and `develop` through the workflow's pull requests.
     - `develop` contains `main`.
     - `CHANGELOG.md` is right.
-25. **The RN playbook, `docs/setup.md`, `scripts/setup-repo.sh`, the placeholder check, and turning the repo into a template.**
+25. **The RN playbook, `docs/setup.md` (including the optional bot identity for agents, ADR 0002), `scripts/setup-repo.sh`, the placeholder check, and turning the repo into a template.**
     Check: a teammate creates a copy by following `docs/setup.md`, and every check in it passes.
