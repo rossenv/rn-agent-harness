@@ -20,11 +20,27 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # the commit check reads every commit in the pull request
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      # The git naming rules from docs/process.md. Values from the event go through env, never straight into the script.
+      - name: Branch name
+        if: github.event_name == 'pull_request'
+        env:
+          BRANCH: ${{ github.head_ref }}
+        run: npm run -s git-rules -- branch "$BRANCH"
+      - name: Commit messages
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: npm run -s git-rules -- commits "$BASE_SHA" "$HEAD_SHA"
+      - name: Versions match
+        run: npm run -s git-rules -- versions
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run format:check
