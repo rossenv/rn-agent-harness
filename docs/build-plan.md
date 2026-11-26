@@ -82,7 +82,7 @@ Each step ends with the check that proves it's done. Nothing here pushes to GitH
    Check:
    - `git push origin main` is rejected.
    - `gh api repos/<owner>/<repo>/rulesets` lists the rulesets.
-   - A pull request that touches `AGENTS.md` waits for the owner's approval.
+   - `gh api repos/<owner>/<repo>/codeowners/errors` reports no errors. (GitHub doesn't enforce code-owner review here; ADR 0002 says what does.)
 7. **The protect-files hook with the ADR 0002 list, and its tests.**
    Check: the hook tests pass, and an agent asked to edit `AGENTS.md` or `app.json` is blocked as a rule file, in both tools.
 8. **The lint-edit hook: ESLint and Prettier on edited `.ts` and `.tsx` files.**
@@ -129,5 +129,5 @@ Each step ends with the check that proves it's done. Nothing here pushes to GitH
     - A fix made on `release/v0.1.0` reaches `release/v0.2.0` and `develop` through the workflow's pull requests.
     - `develop` contains `main`.
     - `CHANGELOG.md` is right.
-25. **The RN playbook, `docs/setup.md` (including the optional bot identity for agents, ADR 0002), `scripts/setup-repo.sh`, the placeholder check, and turning the repo into a template.**
+25. **The RN playbook, `docs/setup.md` (including the team option from ADR 0002: a bot identity for agents and 1 required approval), `scripts/setup-repo.sh`, the placeholder check, and turning the repo into a template.**
     Check: a teammate creates a copy by following `docs/setup.md`, and every check in it passes.
