@@ -89,8 +89,8 @@ Each step ends with the check that proves it's done. Nothing here pushes to GitH
    Check: an agent adds `src/tmp.tsx` with badly grouped imports, and lint feedback comes back right after the edit. Delete the file afterwards.
 9. **The stop gate.**
    Check: ask an agent to add `.skip` to a test and finish. The gate refuses.
-10. **Permissions and sandbox in both tools: ask before `npx expo install`, `npm install` and `gh pr merge`, and deny `gh pr merge --admin`; the Codex prefix rules; the `.vscode` fix.**
-    Check: `npx expo install x` and `gh pr merge` ask first in both tools, `gh pr merge --admin` is refused, and saving a file in VS Code keeps the import groups.
+10. **Permissions and sandbox in both tools: ask before `npx expo install`, `npm install` and `gh pr merge`, and deny `gh pr merge --admin` and pushing tags (`git push --tags`, `git push origin v*`); the Codex prefix rules; the `.vscode` fix.**
+    Check: `npx expo install x` and `gh pr merge` ask first in both tools, `gh pr merge --admin` and `git push --tags` are refused, and saving a file in VS Code keeps the import groups.
 
 ### B. The Expo app
 
