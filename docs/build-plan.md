@@ -78,7 +78,7 @@ Each step ends with the check that proves it's done. Nothing here pushes to GitH
    Check: a pull request with a deliberate type error goes red, and its fix goes green.
 5. **Branch-name, commit-prefix and version-match scripts in `scripts/`, with unit tests, run by CI.**
    Check: the script tests pass, and a pull request from a branch named `bad-name` fails.
-6. **CODEOWNERS; `develop` created and made the default branch; rulesets for `main`, `develop`, `release/*` and `v*` tags; merge commits only; the admin bypass (pull requests only).**
+6. **CODEOWNERS; `develop` created and made the default branch; two branch rulesets for `main`, `develop` and `release/*`: "Protected branches" (PR, `check`, merge commits only; no bypass) and "Rule-file review" (code-owner review; admin bypass for pull requests only); a ruleset for `v*` tags.**
    Check:
    - `git push origin main` is rejected.
    - `gh api repos/<owner>/<repo>/rulesets` lists the rulesets.
