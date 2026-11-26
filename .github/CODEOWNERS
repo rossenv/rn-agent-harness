@@ -1,0 +1,32 @@
+# Rule files (ADR 0002): agents read them, people change them.
+# A pull request that touches one needs a code owner's approval (the "Rule-file review" ruleset).
+# GitHub reads this file from the pull request's base branch.
+
+# Agent instructions and config
+/AGENTS.md          @rossenv
+/CLAUDE.md          @rossenv
+/.claude/           @rossenv
+/.codex/            @rossenv
+/.agents/           @rossenv
+/.mcp.json          @rossenv
+
+# CI and its checks
+/.github/           @rossenv
+/scripts/           @rossenv
+
+# Decisions
+/docs/adr/          @rossenv
+
+# Lint, format, test and TypeScript config, and what CI runs
+/eslint.config.js   @rossenv
+/.prettierrc.json   @rossenv
+/.prettierignore    @rossenv
+/tsconfig.json      @rossenv
+/package.json       @rossenv
+/.nvmrc             @rossenv
+
+# Editor config
+/.vscode/           @rossenv
+
+# Native config: plugins and permissions are product and privacy decisions
+/app.json           @rossenv

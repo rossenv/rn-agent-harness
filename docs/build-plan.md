@@ -78,7 +78,7 @@ Each step ends with the check that proves it's done. Nothing here pushes to GitH
    Check: a pull request with a deliberate type error goes red, and its fix goes green.
 5. **Branch-name, commit-prefix and version-match scripts in `scripts/`, with unit tests, run by CI.**
    Check: the script tests pass, and a pull request from a branch named `bad-name` fails.
-6. **CODEOWNERS; `develop` created and made the default branch; rulesets for `main`, `develop`, `release/*` and `v*` tags; merge commits only; the admin bypass (pull requests only).**
+6. **CODEOWNERS; `develop` created and made the default branch; two branch rulesets for `main`, `develop` and `release/*`: "Protected branches" (PR, `check`, merge commits only; no bypass) and "Rule-file review" (code-owner review; admin bypass for pull requests only); a ruleset for `v*` tags.**
    Check:
    - `git push origin main` is rejected.
    - `gh api repos/<owner>/<repo>/rulesets` lists the rulesets.
@@ -89,8 +89,8 @@ Each step ends with the check that proves it's done. Nothing here pushes to GitH
    Check: an agent adds `src/tmp.tsx` with badly grouped imports, and lint feedback comes back right after the edit. Delete the file afterwards.
 9. **The stop gate.**
    Check: ask an agent to add `.skip` to a test and finish. The gate refuses.
-10. **Permissions and sandbox in both tools: ask before `npx expo install`, `npm install` and `gh pr merge`, and deny `gh pr merge --admin`; the Codex prefix rules; the `.vscode` fix.**
-    Check: `npx expo install x` and `gh pr merge` ask first in both tools, `gh pr merge --admin` is refused, and saving a file in VS Code keeps the import groups.
+10. **Permissions and sandbox in both tools: ask before `npx expo install`, `npm install` and `gh pr merge`, and deny `gh pr merge --admin` and pushing tags (`git push --tags`, `git push origin v*`); the Codex prefix rules; the `.vscode` fix.**
+    Check: `npx expo install x` and `gh pr merge` ask first in both tools, `gh pr merge --admin` and `git push --tags` are refused, and saving a file in VS Code keeps the import groups.
 
 ### B. The Expo app
 

@@ -49,6 +49,6 @@ The exact list lives in the protect-files hook. If this ADR and the hook disagre
 
 ## Consequences
 
-- A solo owner can't approve their own pull request. The ruleset gives the repository admin a bypass that works only through pull requests. A team can remove that bypass.
+- A solo owner can't approve their own pull request. The code-owner review lives in its own ruleset, "Rule-file review", which gives the repository admin a bypass that works only through pull requests. The other branch rules, including the required check, are in a ruleset with no bypass, so the bypass skips only the review. A team can remove the bypass.
 - Every merge an agent proposes needs a teammate's yes.
 - Adding a native module needs a person to edit `app.json`.
