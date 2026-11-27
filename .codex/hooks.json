@@ -24,6 +24,18 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/.agents/hooks/stop-gate.mts\"",
+            "timeout": 180,
+            "statusMessage": "Checking the work before stopping"
+          }
+        ]
+      }
     ]
   }
 }
