@@ -48,6 +48,8 @@ function run(args: string[], root: string): string | null {
   const result = spawnSync("npx", ["--no-install", ...args], {
     cwd: root,
     encoding: "utf8",
+    // npm prints "npm notice run ..." for each npx call; the agent needs only the problems.
+    env: { ...process.env, npm_config_loglevel: "error" },
   });
   return result.status === 0
     ? null

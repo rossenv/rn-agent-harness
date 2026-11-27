@@ -108,6 +108,14 @@ describe("Claude's file tools", () => {
     expect(run.stderr).toContain("eslint.config.js");
   });
 
+  it("sends only the problems, without npm's own notices", () => {
+    const run = claude("Edit", file("noisy.tsx", UNUSED_VAR + BAD_FORMAT));
+    expect(run.status).toBe(2);
+    expect(run.stderr).toContain("no-unused-vars");
+    expect(run.stderr).toContain("noisy.tsx");
+    expect(run.stderr).not.toContain("npm notice");
+  });
+
   it.each(["ts", "tsx", "js", "mts"])(
     "reports a Prettier problem in a .%s file",
     (ext) => {
