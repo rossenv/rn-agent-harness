@@ -45,5 +45,5 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - name: No silencing comments # a disable comment turns off the rule that would catch it
-        run: "! git grep -nE 'eslint-(disable|enable)|@ts-(ignore|expect-error|nocheck)' -- src __tests__ scripts"
+        run: "! git grep -nE 'eslint-(disable|enable)|@ts-(ignore|expect-error|nocheck)' -- src __tests__ scripts .agents"
       - run: npm test -- --ci # the full suite, never only changed tests

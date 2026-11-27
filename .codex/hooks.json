@@ -1,0 +1,17 @@
+{
+  "description": "Project hooks. Codex runs them only after you trust this project and its hooks.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^(Bash|apply_patch)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/.agents/hooks/protect-files.mts\"",
+            "statusMessage": "Checking protected files"
+          }
+        ]
+      }
+    ]
+  }
+}
