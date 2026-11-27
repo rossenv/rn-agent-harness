@@ -129,5 +129,5 @@ Each step ends with the check that proves it's done. Nothing here pushes to GitH
     - A fix made on `release/v0.1.0` reaches `release/v0.2.0` and `develop` through the workflow's pull requests.
     - `develop` contains `main`.
     - `CHANGELOG.md` is right.
-25. **The RN playbook, `docs/setup.md` (including the team option from ADR 0002: a bot identity for agents and 1 required approval), `scripts/setup-repo.sh`, the placeholder check, and turning the repo into a template.**
+25. **The RN playbook, `docs/setup.md` (including the agents' GitHub account from ADR 0002: the account, its repo invite, the token in the Keychain, and `.agents/codex.sh` for Codex), `scripts/setup-repo.sh`, the placeholder check, and turning the repo into a template.**
     Check: a teammate creates a copy by following `docs/setup.md`, and every check in it passes.

@@ -1,5 +1,5 @@
 ---
-status: accepted (2026-11-25), amended (2026-11-26)
+status: accepted (2026-11-25), amended (2026-11-27)
 ---
 
 # Rule files need the owner's review, and only people merge into main
@@ -9,26 +9,28 @@ Most pull requests need no review, and an agent may merge them into `develop` or
 1. **A pull request that touches a rule file needs the owner's approval.** The edit hooks keep agents' file tools away from rule files, but an agent's shell can still write them. The owner's review of the change is the backstop that catches it.
 2. **Only people merge into `main`.** A merge into `main` is a release or a hotfix, and it creates a tag.
 
-## What enforces them
+## Agents have their own GitHub account
 
-An agent runs `git` and `gh` with the login of the teammate who started it, so GitHub sees the agent as that teammate. In this repository (public, owned by a personal account), GitHub can't enforce either exception. We tested this on 2026-11-26:
+Agents push, open pull requests and merge as the agents' GitHub account (`CodyKnox` here), a collaborator with Write access, not admin. Its token is a classic token with only the `repo` scope, kept in the macOS Keychain as `rn-agent-harness-gh-agent`. `.agents/github-identity.sh` hands it to `gh` and `git` for agent shell commands only:
 
-- **Code-owner review isn't enforced.** With CODEOWNERS in place and "Require review from Code Owners" on, but 0 required approvals, a pull request that changed `AGENTS.md` was mergeable with no review.
-- **A file-path rule isn't available.** GitHub rejects "Restrict file paths" in a branch ruleset. A push ruleset allows only an "always" bypass, which an agent signed in as the owner would also get.
-- **"Only people" can't be expressed,** because the agent is the person as far as GitHub knows.
+- **Claude Code:** a SessionStart hook in `.claude/settings.json` makes every Bash command load it.
+- **Codex:** start it with `.agents/codex.sh`, which loads it and then runs `codex`. Codex hooks can't set environment variables.
 
-So both exceptions are enforced by the agent tools, in Claude Code and Codex alike:
+Your own terminal keeps your login. Commits made by agents name `CodyKnox` as author. Because GitHub now sees two people, it can enforce both exceptions:
 
-- The agent asks the teammate before every `gh pr merge`, so every merge an agent makes is one a teammate said yes to. That yes is the review: before giving it for a rule-file change, read the diff.
-- `gh pr merge --admin`, which skips the rulesets, is denied.
+| Exception                     | What enforces it                                                                                                                       | Tested                                                                                                                                |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Rule-file review              | CODEOWNERS and the "Rule-file review" ruleset (code-owner review, 0 required approvals).                                               | 2026-11-27: a pull request by `CodyKnox` that changed `AGENTS.md` asked `rossenv` for review and stayed blocked after `check` passed. |
+| Only people merge into `main` | The "Main: people merge (admin only)" ruleset restricts updates to the admin role, through pull requests only. `CodyKnox` isn't admin. | Rule confirmed on `main`; not tried with a merge, which would risk `main`.                                                            |
+| Agents can't skip rules       | `CodyKnox` is on no bypass list, so `gh pr merge --admin` fails for it.                                                                | Follows from its role.                                                                                                                |
 
-These are rules on shell commands, so they are best-effort: an agent can reach GitHub by other routes, such as `gh api`.
+Your own rule-file pull requests don't wait for review: GitHub doesn't ask an author to review their own change (tested 2026-11-26). That is fine, because the exception is about agents.
 
-GitHub still enforces the rest: a pull request and a passing `check` for every change to `develop`, `main` and `release/*`, merge commits only, and no force-push or deletion.
+## What the account doesn't cover
 
-## For a team that wants GitHub to enforce them
-
-Give agents their own GitHub identity (a bot account or a GitHub App token), and require 1 approval in the "Rule-file review" ruleset. A pull request the bot opens then needs a teammate's approval, and the bot isn't on the bypass list, so it can't merge into `main` or skip the review. `docs/setup.md` describes this. The cost is that every pull request needs a review, not only rule-file changes.
+- **The agent can still reach your login.** It runs on your machine, where your own `gh` and git credentials are stored. The account guards against mistakes and prompt injection, not an agent that sets out to switch back. The agent tools stay as a second layer: ask before every `gh pr merge`, and deny `gh pr merge --admin` and pushing tags.
+- **Without the Keychain item,** for example a teammate who hasn't set it up, agents use that teammate's login and only the agent tools apply. The SessionStart hook says so at the start of each Claude session.
+- **Codex started as plain `codex`** uses your login.
 
 ## Rule files
 
@@ -40,18 +42,20 @@ Give agents their own GitHub identity (a bot account or a GitHub App token), and
 - the editor config (`.vscode/`)
 - `app.json`
 
-The exact list lives in the protect-files hook. If this ADR and the hook disagree, the hook wins. `.github/CODEOWNERS` lists the same paths, so GitHub asks the owner to review when someone else opens the pull request.
+The exact list lives in the protect-files hook. If this ADR and the hook disagree, the hook wins. `.github/CODEOWNERS` lists the same paths.
 
 `app.json` is protected because a config plugin or a native permission (camera, location) is a product and privacy decision, not a coding detail.
 
 ## Considered options
 
-- **Require 1 approval on every pull request.** GitHub would enforce it, but the brief wants work to flow without waiting on reviewers, and a solo owner would have to bypass every pull request. It is the team option above.
-- **A bot identity for agents, required.** Not required by default: every copy would need an extra account or app before an agent can do anything.
-- **No backstop at all.** Rejected: an agent could change its own rules through the shell and merge the change.
+- **Agents use the teammate's login, and the agent tools enforce everything.** Our first setup. GitHub can't tell agent from teammate then, so code-owner review isn't enforced (tested 2026-11-26) and "only people merge into `main`" can't be expressed.
+- **A file-path rule for the rule files.** GitHub rejects "Restrict file paths" in a branch ruleset, and a push ruleset allows only an "always" bypass.
+- **Require 1 approval on every pull request.** Enforced, but the brief wants work to flow without waiting on reviewers.
+- **A GitHub App instead of an account.** Narrower, hour-long tokens, but it needs a private key and a script to mint tokens. A fine-grained token isn't an option either: GitHub doesn't allow one for a collaborator on a repository owned by a personal account.
 
 ## Consequences
 
-- The "Rule-file review" ruleset (code-owner review, admin bypass for pull requests only) stays in place. It does nothing for a solo owner today, and it is where a team turns on required approvals.
-- Every merge an agent proposes needs a teammate's yes.
+- Each copy of the template needs its own agents' account, invited with Write, and a token in each teammate's Keychain. `docs/setup.md` describes it. GitHub allows one machine account per person.
+- The token has no `workflow` scope, so GitHub refuses any agent push that changes `.github/workflows/`.
+- A rule-file pull request from an agent waits for a code owner's approval.
 - Adding a native module needs a person to edit `app.json`.
