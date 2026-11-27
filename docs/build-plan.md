@@ -87,8 +87,8 @@ Each step ends with the check that proves it's done. Nothing here pushes to GitH
    Check: the hook tests pass, and an agent asked to edit `AGENTS.md` or `app.json` is blocked as a rule file, in both tools.
 8. **The lint-edit hook: ESLint, Prettier and a silencer search on edited `.ts`, `.tsx`, `.js` and `.mts` files.**
    Check: an agent adds `src/tmp.tsx` with an unused variable and wrong formatting, and lint feedback comes back right after the edit, in both tools. Delete the file afterwards. (The import-order rule arrives in step 11.)
-9. **The stop gate.**
-   Check: ask an agent to add `.skip` to a test and finish. The gate refuses.
+9. **The stop gate: no skipped or focused tests and no silencing comments; with uncommitted changes, also typecheck, lint, format:check and `jest --onlyChanged`.**
+   Check: ask an agent to add `.skip` to a test and finish. The gate refuses, in both tools.
 10. **Permissions and sandbox in both tools: ask before `npx expo install`, `npm install` and `gh pr merge`, and deny `gh pr merge --admin` and pushing tags (`git push --tags`, `git push origin v*`); the Codex prefix rules; the `.vscode` fix.**
     Check: `npx expo install x` and `gh pr merge` ask first in both tools, `gh pr merge --admin` and `git push --tags` are refused, and saving a file in VS Code keeps the import groups.
 
