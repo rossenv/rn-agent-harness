@@ -152,6 +152,54 @@ describe("secrets: no reading or editing .env files", () => {
   });
 });
 
+describe("commands only a person runs (ADR 0001, ADR 0002)", () => {
+  it.each([
+    "gh pr merge --admin",
+    "gh pr merge 12 --admin --merge",
+    "gh pr merge 12 --merge --admin",
+    "gh -R rossenv/rn-agent-harness pr merge 12 --admin",
+    "cd /tmp && gh pr merge 12 --admin",
+    "sh -c 'gh pr merge 12 --admin'",
+  ])("blocks the admin merge %j", (command) => {
+    const run = bash(command);
+    expect(run.status).toBe(2);
+    expect(run.stderr).toContain("admin");
+  });
+
+  it.each([
+    "git push --tags",
+    "git push origin --tags",
+    "git push --follow-tags origin develop",
+    "git push origin v1.2.0",
+    "git push origin +v1.2.0",
+    "git push origin :v1.2.0",
+    "git push origin --delete v1.2.0",
+    "git push origin refs/tags/v1.2.0",
+    "git push origin tag v1.2.0",
+    "git -C . push origin v2.0.0",
+    "git push origin HEAD:refs/tags/release",
+    "gh release create v1.2.0",
+  ])("blocks the tag push %j", (command) => {
+    const run = bash(command);
+    expect(run.status).toBe(2);
+    expect(run.stderr).toContain("tag");
+  });
+
+  it.each([
+    "gh pr merge 12 --merge",
+    "gh pr view 12 --json title",
+    "git push -u origin feat/ABC-1-version-picker",
+    "git push origin develop",
+    "git push origin release/1.2.0",
+    "git tag --list",
+    "git log --tags --oneline",
+    "echo 'use --admin carefully' && git push origin develop",
+    "gh release view v1.2.0",
+  ])("allows %j", (command) => {
+    expect(bash(command).status).toBe(0);
+  });
+});
+
 describe("Codex apply_patch", () => {
   it.each(["Add File", "Update File", "Delete File"])(
     "blocks *** %s: AGENTS.md",

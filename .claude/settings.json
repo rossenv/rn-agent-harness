@@ -2,6 +2,73 @@
   "enabledPlugins": {
     "expo@claude-plugins-official": true
   },
+  "permissions": {
+    "deny": [
+      "Read(./.env)",
+      "Edit(./.env)",
+      "Read(./.env.local)",
+      "Edit(./.env.local)",
+      "Bash(gh pr merge *--admin*)",
+      "Bash(gh * pr merge *--admin*)",
+      "Bash(git push *--tags*)",
+      "Bash(git push *--follow-tags*)",
+      "Bash(git push *refs/tags/*)",
+      "Bash(git push * tag *)",
+      "Bash(git push * v*)",
+      "Bash(gh release create *)"
+    ],
+    "ask": [
+      "Bash(npx expo install *)",
+      "Bash(npm install *)",
+      "Bash(npm i *)",
+      "Bash(npm add *)",
+      "Bash(gh pr merge *)",
+      "Bash(gh * pr merge *)"
+    ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "allowUnsandboxedCommands": true,
+    "excludedCommands": [
+      "gh *",
+      "git push *",
+      "git fetch *",
+      "git pull *",
+      "npx expo run:*"
+    ],
+    "filesystem": {
+      "denyRead": ["./.env", "./.env.local"],
+      "denyWrite": [
+        "./AGENTS.md",
+        "./CLAUDE.md",
+        "./.codex",
+        "./.agents",
+        "./.mcp.json",
+        "./.github",
+        "./scripts",
+        "./docs/adr",
+        "./eslint.config.js",
+        "./.prettierrc.json",
+        "./.prettierignore",
+        "./tsconfig.json",
+        "./tsconfig.node.json",
+        "./package.json",
+        "./.nvmrc",
+        "./.vscode",
+        "./app.json"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "registry.npmjs.org",
+        "github.com",
+        "api.github.com",
+        "*.githubusercontent.com",
+        "*.expo.dev",
+        "exp.host"
+      ]
+    }
+  },
   "hooks": {
     "SessionStart": [
       {

@@ -1,0 +1,61 @@
+# Codex prefix rules, a rule file (ADR 0002). A pattern matches the start of a command only,
+# so `gh pr merge 12 --admin` and `git push origin v1.2.0` are refused by the protect-files hook instead.
+# When several rules match, the strictest wins: forbidden > prompt > allow.
+
+# New dependencies need a person's OK (AGENTS.md).
+prefix_rule(
+    pattern = ["npx", "expo", "install"],
+    decision = "prompt",
+    justification = "Adding a dependency needs the teammate's OK.",
+    match = [["npx", "expo", "install", "expo-sqlite"]],
+    not_match = [["npx", "expo", "run:ios"], ["npx", "expo", "start"]],
+)
+
+prefix_rule(
+    pattern = ["npm", ["install", "i", "add"]],
+    decision = "prompt",
+    justification = "Adding a dependency needs the teammate's OK. Use npx expo install for Expo and React Native packages.",
+    match = [["npm", "install", "zod"], ["npm", "i", "-D", "msw"], ["npm", "add", "zod"]],
+    not_match = [["npm", "ci"], ["npm", "test"], ["npm", "run", "lint"]],
+)
+
+# Every merge asks first (ADR 0002).
+prefix_rule(
+    pattern = ["gh", "pr", "merge"],
+    decision = "prompt",
+    justification = "Merging needs the teammate's OK. Agents may merge into develop or release/* once the check passes; a person merges into main.",
+    match = [["gh", "pr", "merge", "12", "--merge"]],
+    not_match = [["gh", "pr", "view", "12"]],
+)
+
+# Admin merges and tags are for people only (ADR 0001, ADR 0002).
+prefix_rule(
+    pattern = ["gh", "pr", "merge", "--admin"],
+    decision = "forbidden",
+    justification = "An admin merge skips the required check and review.",
+    match = [["gh", "pr", "merge", "--admin", "12"]],
+)
+
+prefix_rule(
+    pattern = ["git", "push", ["--tags", "--follow-tags"]],
+    decision = "forbidden",
+    justification = "CI creates v* tags when main is merged (ADR 0001).",
+    match = [["git", "push", "--tags"], ["git", "push", "--follow-tags", "origin", "develop"]],
+    not_match = [["git", "push", "origin", "develop"]],
+)
+
+prefix_rule(
+    pattern = ["git", "push", "origin", ["--tags", "--follow-tags", "tag"]],
+    decision = "forbidden",
+    justification = "CI creates v* tags when main is merged (ADR 0001).",
+    match = [["git", "push", "origin", "--tags"], ["git", "push", "origin", "tag", "v1.2.0"]],
+    not_match = [["git", "push", "origin", "develop"]],
+)
+
+prefix_rule(
+    pattern = ["gh", "release", "create"],
+    decision = "forbidden",
+    justification = "gh release create pushes a tag; CI creates v* tags when main is merged (ADR 0001).",
+    match = [["gh", "release", "create", "v1.2.0"]],
+    not_match = [["gh", "release", "view", "v1.2.0"]],
+)

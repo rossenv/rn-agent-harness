@@ -1,0 +1,9 @@
+# Project-scoped Codex config, a rule file (ADR 0002). Codex loads it only after you trust this project.
+# Commands run in the workspace sandbox with network on (npm, git, gh); edits outside the repo ask first.
+# .codex/rules/ makes installs and merges ask, and refuses admin merges and tag pushes;
+# the protect-files hook refuses those too, wherever the flag sits in the command.
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
+
+[sandbox_workspace_write]
+network_access = true
