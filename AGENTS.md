@@ -53,3 +53,5 @@ In Jira (ADR 0006):
 - Ask the teammate before each write: create, edit, transition or comment.
 - Leave deletes to people, and leave Fix Version to planning.
 - Search once and reuse the results. The site allows 500 calls an hour, shared by everyone.
+
+<!-- Throwaway: proves a rule-file change opened by the agent account waits for code-owner review. Never merged. -->
