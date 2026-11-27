@@ -85,8 +85,8 @@ Each step ends with the check that proves it's done. Nothing here pushes to GitH
    - `gh api repos/<owner>/<repo>/codeowners/errors` reports no errors. (GitHub doesn't enforce code-owner review here; ADR 0002 says what does.)
 7. **The protect-files hook with the ADR 0002 list, and its tests.**
    Check: the hook tests pass, and an agent asked to edit `AGENTS.md` or `app.json` is blocked as a rule file, in both tools.
-8. **The lint-edit hook: ESLint and Prettier on edited `.ts` and `.tsx` files.**
-   Check: an agent adds `src/tmp.tsx` with badly grouped imports, and lint feedback comes back right after the edit. Delete the file afterwards.
+8. **The lint-edit hook: ESLint, Prettier and a silencer search on edited `.ts`, `.tsx`, `.js` and `.mts` files.**
+   Check: an agent adds `src/tmp.tsx` with an unused variable and wrong formatting, and lint feedback comes back right after the edit, in both tools. Delete the file afterwards. (The import-order rule arrives in step 11.)
 9. **The stop gate.**
    Check: ask an agent to add `.skip` to a test and finish. The gate refuses.
 10. **Permissions and sandbox in both tools: ask before `npx expo install`, `npm install` and `gh pr merge`, and deny `gh pr merge --admin` and pushing tags (`git push --tags`, `git push origin v*`); the Codex prefix rules; the `.vscode` fix.**
