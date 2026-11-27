@@ -11,4 +11,32 @@ module.exports = defineConfig([
   {
     ignores: ["dist/*", ".expo/*"],
   },
+  // Import style (ADR 0004): `@/` for code outside the folder, `./` inside it, never `../`;
+  // three groups (packages, `@/`, `./`) with a blank line between them, not sorted within a group.
+  {
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["../*", ".."],
+              message:
+                "Import code outside this folder as @/<folder>/... (ADR 0004). ../ imports are banned.",
+            },
+          ],
+        },
+      ],
+      "import/order": [
+        "error",
+        {
+          groups: [["builtin", "external"], "internal", ["sibling", "index"]],
+          pathGroups: [{ pattern: "@/**", group: "internal" }],
+          pathGroupsExcludedImportTypes: ["builtin"],
+          "newlines-between": "always",
+          alphabetize: { order: "ignore" },
+        },
+      ],
+    },
+  },
 ]);
