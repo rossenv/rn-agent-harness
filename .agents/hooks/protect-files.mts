@@ -1,9 +1,11 @@
 // PreToolUse hook for Claude Code and Codex.
 // - Rule files (ADR 0002): agents may read them, but their file tools can't change them.
 // - Secrets: no reading or editing .env files (.env.example is fine).
+// - Commands only a person runs: admin merges and pushing tags (ADR 0001, ADR 0002).
 // Exit 2 blocks the tool call, and stderr tells the agent why.
-// Bash commands are checked for .env only. A shell can still write a rule file
-// (sed -i, echo >): the agents' GitHub account and code-owner review catch that (ADR 0002).
+// Bash commands are checked as text, so `sh -c '...'` and flags in any order are caught.
+// A shell can still write a rule file (sed -i, echo >): Claude's sandbox, the agents'
+// GitHub account and code-owner review catch that (ADR 0002).
 import { readFileSync } from "node:fs";
 import { isAbsolute, relative, resolve, sep } from "node:path";
 
@@ -45,6 +47,25 @@ const SECRET_PATH = /(^|\/)\.env(?!\.example$)(\.[\w-]+)*$/;
 // The same, found anywhere in a shell command. Best-effort.
 const SECRET_IN_COMMAND =
   /(^|[^\w.-])\.env(?!\.example\b)(\.[\w-]+)*(?![\w.-])/;
+
+// Commands only a person runs. Each is tested against one simple command at a time
+// (split on ; & | and newlines), so `echo --admin && git push origin develop` is fine.
+const PERSON_ONLY: { pattern: RegExp; why: string }[] = [
+  {
+    pattern: /\bgh\b.*\bpr\s+merge\b.*\s--admin\b/,
+    why: "an admin merge skips the required check and review. A person merges with --admin, if ever",
+  },
+  {
+    // --tags, --follow-tags, refs/tags/, `tag <name>`, or a ref like v1.2.0 (also +v1, :v1)
+    pattern:
+      /\bgit\b.*\spush\b.*(\s--(tags|follow-tags)\b|refs\/tags\/|\stag\s|\s[+:]?v\d)/,
+    why: "pushing a tag starts a release. CI creates v* tags when main is merged (ADR 0001)",
+  },
+  {
+    pattern: /\bgh\b.*\brelease\s+create\b/,
+    why: "`gh release create` pushes a tag. CI creates v* tags when main is merged (ADR 0001)",
+  },
+];
 
 // Claude's worktree agents work in .claude/worktrees/<name>/, a full copy of the repo.
 const WORKTREE = /^\.claude\/worktrees\/[^/]+\//;
@@ -102,6 +123,13 @@ if (tool === "Bash") {
     block(
       "Blocked: this command touches a .env file, which holds secrets. Ask the human instead.",
     );
+  }
+  for (const part of command.split(/[;&|\n]+/)) {
+    const rule = PERSON_ONLY.find((r) => r.pattern.test(part));
+    if (rule)
+      block(
+        `Blocked: ${part.trim()}: ${rule.why}. Stop and ask the human to run it.`,
+      );
   }
   process.exit(0);
 }

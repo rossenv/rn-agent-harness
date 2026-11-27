@@ -89,7 +89,7 @@ Each step ends with the check that proves it's done. Nothing here pushes to GitH
    Check: an agent adds `src/tmp.tsx` with an unused variable and wrong formatting, and lint feedback comes back right after the edit, in both tools. Delete the file afterwards. (The import-order rule arrives in step 11.)
 9. **The stop gate: no skipped or focused tests and no silencing comments; with uncommitted changes, also typecheck, lint, format:check and `jest --onlyChanged`.**
    Check: ask an agent to add `.skip` to a test and finish. The gate refuses, in both tools.
-10. **Permissions and sandbox in both tools: ask before `npx expo install`, `npm install` and `gh pr merge`, and deny `gh pr merge --admin` and pushing tags (`git push --tags`, `git push origin v*`); the Codex prefix rules; the `.vscode` fix.**
+10. **Permissions and sandbox in both tools: ask before `npx expo install`, `npm install` and `gh pr merge`, and deny `gh pr merge --admin` and pushing tags (`git push --tags`, `git push origin v*`); the Codex prefix rules; the protect-files hook refusing the same commands wherever the flag sits; Claude's sandbox with the rule files write-denied; the `.vscode` fix (Jest on demand).**
     Check: `npx expo install x` and `gh pr merge` ask first in both tools, `gh pr merge --admin` and `git push --tags` are refused, and saving a file in VS Code keeps the import groups.
 
 ### B. The Expo app

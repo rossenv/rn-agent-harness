@@ -59,7 +59,8 @@
     "node": ">=26 <27"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "watchman": false
   },
   "allowScripts": {
     "fsevents@2.3.3": true,
